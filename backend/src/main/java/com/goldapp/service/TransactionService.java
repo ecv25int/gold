@@ -3,6 +3,9 @@ package com.goldapp.service;
 import com.goldapp.entity.GoldPrice;
 import com.goldapp.entity.Transaction;
 import com.goldapp.entity.User;
+import com.goldapp.entity.Provider;
+import com.goldapp.entity.Client;
+import com.goldapp.entity.InventoryMovement;
 import com.goldapp.repository.TransactionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +26,16 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final UserService userService;
     private final GoldPriceService goldPriceService;
+    private final InventoryService inventoryService;
 
     public TransactionService(TransactionRepository transactionRepository,
                               UserService userService,
-                              GoldPriceService goldPriceService) {
+                              GoldPriceService goldPriceService,
+                              InventoryService inventoryService) {
         this.transactionRepository = transactionRepository;
         this.userService = userService;
         this.goldPriceService = goldPriceService;
+        this.inventoryService = inventoryService;
     }
 
     public Transaction buyGold(User user, BigDecimal goldAmount) {

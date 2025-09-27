@@ -223,13 +223,13 @@ public class Transaction {
 
     private void normalizeScales() {
         if (goldAmount != null) {
-            goldAmount = goldAmount.setScale(GOLD_AMOUNT_SCALE, BigDecimal.ROUND_HALF_UP);
+            goldAmount = goldAmount.setScale(GOLD_AMOUNT_SCALE, java.math.RoundingMode.HALF_UP);
         }
         if (pricePerGram != null) {
-            pricePerGram = pricePerGram.setScale(MONEY_SCALE, BigDecimal.ROUND_HALF_UP);
+            pricePerGram = pricePerGram.setScale(MONEY_SCALE, java.math.RoundingMode.HALF_UP);
         }
         if (totalAmount != null) {
-            totalAmount = totalAmount.setScale(MONEY_SCALE, BigDecimal.ROUND_HALF_UP);
+            totalAmount = totalAmount.setScale(MONEY_SCALE, java.math.RoundingMode.HALF_UP);
         }
     }
 

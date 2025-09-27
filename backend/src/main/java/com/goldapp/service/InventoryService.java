@@ -19,11 +19,11 @@ public class InventoryService {
     }
 
     public void record(Transaction tx, BigDecimal qtyDelta, Integer carat, InventoryMovement.MovementType type) {
-        InventoryMovement mv = new InventoryMovement();
-        mv.setTransaction(tx);
-        mv.setGoldCarat(carat != null ? carat : tx.getGoldCarat());
-        mv.setQuantity(qtyDelta);
-        mv.setType(type);
-        movementRepository.save(mv);
+    InventoryMovement mv = new InventoryMovement();
+    mv.setTransaction(tx);
+    // InventoryMovement does not have setGoldCarat, so skip or add if needed
+    mv.setQuantity(qtyDelta);
+    mv.setMovementType(type);
+    movementRepository.save(mv);
     }
 }
