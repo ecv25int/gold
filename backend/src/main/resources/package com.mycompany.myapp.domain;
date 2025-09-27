@@ -1,0 +1,44 @@
+package com.mycompany.myapp.domain;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.Instant;
+
+@Entity
+@Table(name = "inventory_movement")
+public class InventoryMovement {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @ManyToOne(optional = false)
+  private GoldInventory inventory;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "movement_type", nullable = false)
+  private MovementType movementType; // IN / OUT
+
+  @Column(name = "karat", nullable = false)
+  private Integer karat;
+
+  @Column(name = "grams", precision = 21, scale = 6, nullable = false)
+  private BigDecimal grams;
+
+  @Column(name = "unit_price", precision = 21, scale = 6)
+  private BigDecimal unitPrice;
+
+  @Column(name = "total", precision = 21, scale = 6)
+  private BigDecimal total;
+
+  @Column(name = "reference_type")
+  private String referenceType; // PURCHASE / SALE
+
+  @Column(name = "reference_id")
+  private Long referenceId;
+
+  @Column(name = "created_at", nullable = false)
+  private Instant createdAt = Instant.now();
+
+  // getters/setters
+
+  public enum MovementType { IN, OUT }
+}
