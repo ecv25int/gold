@@ -1,0 +1,1 @@
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; public class Simple { public static void main(String[] args) { BCryptPasswordEncoder e = new BCryptPasswordEncoder(); System.out.println("admin123: " + e.encode("admin123")); System.out.println("demo123: " + e.encode("demo123")); System.out.println("password123: " + e.encode("password123")); }}
