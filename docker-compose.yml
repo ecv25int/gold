@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gold-app-postgres
+    environment:
+      POSTGRES_DB: goldtradingdb
+      POSTGRES_USER: golduser
+      POSTGRES_PASSWORD: goldpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - gold-app-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: gold-app-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/goldtradingdb
+      SPRING_DATASOURCE_USERNAME: golduser
+      SPRING_DATASOURCE_PASSWORD: goldpass
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - gold-app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: gold-app-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - gold-app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  gold-app-network:
+    driver: bridge
