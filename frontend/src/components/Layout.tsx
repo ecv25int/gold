@@ -53,15 +53,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <span>Dashboard</span>
                 </Link>
                 <Link
-                  to="/trading"
+                  to="/operation"
                   className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive('/trading')
+                    isActive('/operation')
                       ? 'bg-gold-100 text-gold-700 shadow-soft'
                       : 'text-dark-600 hover:text-dark-900 hover:bg-white/50'
                   }`}
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  <span>Trading</span>
+                  <span>Operation</span>
+                </Link>
+                <Link
+                  to="/clients"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    isActive('/clients')
+                      ? 'bg-gold-100 text-gold-700 shadow-soft'
+                      : 'text-dark-600 hover:text-dark-900 hover:bg-white/50'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Clients</span>
+                </Link>
+                <Link
+                  to="/providers"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    isActive('/providers')
+                      ? 'bg-gold-100 text-gold-700 shadow-soft'
+                      : 'text-dark-600 hover:text-dark-900 hover:bg-white/50'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Providers</span>
                 </Link>
                 <Link
                   to="/transactions"

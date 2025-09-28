@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS gold_prices (
     buy_price DECIMAL(19,2) NOT NULL,
     sell_price DECIMAL(19,2) NOT NULL,
     currency VARCHAR(10) DEFAULT 'USD',
-    unit VARCHAR(20) DEFAULT 'troy_ounce',
+    -- Removed unit column; all prices are per gram
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT true
 );

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -65,6 +66,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Transaction> transactions;
     
     @PrePersist

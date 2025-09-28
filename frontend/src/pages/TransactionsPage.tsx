@@ -106,7 +106,7 @@ const TransactionsPage: React.FC = () => {
                   <span className="font-semibold text-dark-900">Total Volume</span>
                 </div>
                 <p className="text-2xl font-bold text-gold-600">
-                  {transactions.reduce((sum, t) => sum + t.amount, 0).toFixed(2)} oz
+                  {transactions.reduce((sum, t) => sum + t.amount, 0).toFixed(2)} grams
                 </p>
               </div>
             </div>
@@ -143,7 +143,7 @@ const TransactionsPage: React.FC = () => {
                           Amount
                         </th>
                         <th className="text-left py-6 px-8 font-semibold text-dark-700 text-sm uppercase tracking-wider">
-                          Price per oz
+                          Price per gram
                         </th>
                         <th className="text-left py-6 px-8 font-semibold text-dark-700 text-sm uppercase tracking-wider">
                           Total Value
@@ -186,10 +186,10 @@ const TransactionsPage: React.FC = () => {
                             </div>
                           </td>
                           <td className="py-6 px-8 text-dark-900 font-semibold">
-                            {transaction.amount.toFixed(2)} oz
+                            {transaction.amount.toFixed(2)} grams
                           </td>
                           <td className="py-6 px-8 text-dark-900 font-semibold">
-                            ${transaction.pricePerUnit.toFixed(2)}
+                            ${transaction.pricePerGram.toFixed(2)}
                           </td>
                           <td className="py-6 px-8 text-dark-900 font-bold text-lg">
                             ${transaction.totalPrice.toFixed(2)}
@@ -250,11 +250,13 @@ const TransactionsPage: React.FC = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="text-sm text-dark-600">Amount</span>
-                          <p className="font-semibold text-dark-900">{transaction.amount.toFixed(2)} oz</p>
+                          {/* Removed ounces, only show grams */}
+                          <p className="font-semibold text-dark-900">{transaction.amount.toFixed(2)} grams</p>
                         </div>
                         <div>
-                          <span className="text-sm text-dark-600">Price per oz</span>
-                          <p className="font-semibold text-dark-900">${transaction.pricePerUnit.toFixed(2)}</p>
+                          {/* Removed price per ounce, only show price per gram */}
+                          <span className="text-sm text-dark-600">Price per gram</span>
+                          <p className="font-semibold text-dark-900">${transaction.pricePerGram.toFixed(2)}</p>
                         </div>
                       </div>
                     </div>

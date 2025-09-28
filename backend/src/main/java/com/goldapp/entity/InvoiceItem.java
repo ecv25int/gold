@@ -29,8 +29,7 @@ public class InvoiceItem {
     @Column(precision = 19, scale = 6)
     private BigDecimal quantity;
     
-    @Size(max = 20)
-    private String unit = "gramos";
+    // Removed unit field; all invoice items are in grams
     
     @NotNull
     @DecimalMin(value = "0.0")
@@ -85,8 +84,8 @@ public class InvoiceItem {
         calculateTotal();
     }
     
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    // Removed getUnit(); unit field no longer exists
+    // Removed getUnit/setUnit; unit field no longer exists
     
     public BigDecimal getUnitPrice() { return unitPrice; }
     public void setUnitPrice(BigDecimal unitPrice) { 

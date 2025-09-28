@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Client } from '../services/clientService';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-
+import api from '../services/api';
+import { goldService } from '../services/goldService';
 
 type CartItem = {
   carat: number;
@@ -10,33 +12,71 @@ type CartItem = {
   pricePerGram: number;
 };
 
-const caratOptions = [14, 18, 22, 24];
+interface GoldItem {
+  id: number;
+  carat: number;
+  quantityInGrams: number;
+  averageBuyPrice: number;
+}
 
-
-const TradingPage: React.FC = () => {
-  // ...existing code...
+const OperationPage: React.FC = () => {
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '' });
   const [customerSet, setCustomerSet] = useState(false);
   const [carat, setCarat] = useState(24);
   const [grams, setGrams] = useState(1);
   const [pricePerGram, setPricePerGram] = useState(0);
-  const [action, setAction] = useState<'BUY' | 'SELL'>('BUY'); // Invoice-wide action
+  const [action, setAction] = useState<'BUY' | 'SELL'>('BUY');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showInvoice, setShowInvoice] = useState(false);
-  // ...existing code...
+  const [inventory, setInventory] = useState<GoldItem[]>([]);
+  const [caratOptions, setCaratOptions] = useState<number[]>([]);
 
-  // Simulate fetching carat prices (replace with API call in production)
-  const caratPrices: { carat: number; pricePerGram: number }[] = [
-    { carat: 14, pricePerGram: 38.5 },
-    { carat: 18, pricePerGram: 49.2 },
-    { carat: 22, pricePerGram: 60.1 },
-    { carat: 24, pricePerGram: 65.0 },
-  ];
+  useEffect(() => {
+    const fetchInventory = async () => {
+      const res = await api.get<GoldItem[]>('/inventory');
+      setInventory(res.data);
+      setCaratOptions([...new Set(res.data.map(item => item.carat))]);
+    };
+    fetchInventory();
+  }, []);
 
-  React.useEffect(() => {
-    const found = caratPrices.find(p => p.carat === carat);
-    setPricePerGram(found ? found.pricePerGram : 0);
-  }, [carat]);
+  useEffect(() => {
+    const found = inventory.find(item => item.carat === carat);
+  setPricePerGram(found ? found.averageBuyPrice : 0);
+  }, [carat, inventory]);
+
+  // Auto-populate client fields when typing
+  useEffect(() => {
+    const searchClient = async () => {
+      if (!customer.name && !customer.email && !customer.phone) {
+        return;
+      }
+      try {
+        // Use the first non-empty field for search
+        const q = customer.name || customer.email || customer.phone;
+        if (!q) return;
+        const res = await api.get('/clients/search', {
+          params: { q }
+        });
+        const clients = res.data.content || [];
+        if (clients.length === 1) {
+          const match = clients[0];
+          setCustomer({
+            name: `${match.firstName} ${match.lastName}`,
+            email: match.email || '',
+            phone: match.phoneNumber || '',
+          });
+        }
+      } catch {
+        // ignore
+      }
+    };
+    searchClient();
+  }, [customer.name, customer.email, customer.phone]);
+
+  const handleCustomerChange = (field: string, value: string) => {
+    setCustomer(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleCustomerSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,14 +88,18 @@ const TradingPage: React.FC = () => {
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerSet) return;
-    if (grams > 0 && pricePerGram > 0) {
+  const available = inventory.find(i => i.carat === carat)?.quantityInGrams ?? 0;
+    if (grams > 0 && pricePerGram > 0 && grams <= available) {
       setCart(prev => {
         const idx = prev.findIndex(item => item.carat === carat && item.pricePerGram === pricePerGram);
         if (idx !== -1) {
           // Add grams to existing item
           const updated = [...prev];
-          updated[idx] = { ...updated[idx], grams: updated[idx].grams + grams };
-          return updated;
+          if (updated[idx].grams + grams <= available) {
+            updated[idx] = { ...updated[idx], grams: updated[idx].grams + grams };
+            return updated;
+          }
+          return prev;
         }
         return [...prev, { carat, grams, pricePerGram }];
       });
@@ -69,8 +113,20 @@ const TradingPage: React.FC = () => {
 
   const total = cart.reduce((sum, item) => sum + item.grams * item.pricePerGram, 0);
 
-  const handleCheckout = () => {
-    setShowInvoice(true);
+  const handleCheckout = async () => {
+    // Save each cart item as a transaction
+    try {
+      for (const item of cart) {
+        if (action === 'BUY') {
+          await goldService.buyGold(item.grams);
+        } else {
+          await goldService.sellGold(item.grams);
+        }
+      }
+      setShowInvoice(true);
+    } catch (err) {
+      alert('Error saving transaction');
+    }
   };
 
   return (
@@ -84,9 +140,7 @@ const TradingPage: React.FC = () => {
                 <p className="text-lg text-dark-600">Trade gold at live market prices with instant execution</p>
               </div>
               <Link to="/ClientsPage" className="inline-block py-2 px-6 rounded-xl font-bold bg-gold-100 text-gold-800 border border-gold-400 hover:bg-gold-200 transition-all duration-150 cursor-pointer">
-                Clients Registry
               </Link>
-            </div>
           </div>
           {/* Clients Section removed, now in ClientsPage.tsx */}
           {/* Customer Data Section */}
@@ -103,15 +157,15 @@ const TradingPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-lg font-semibold text-dark-900 mb-2">Name</label>
-                  <input type="text" value={customer.name} onChange={e => setCustomer({ ...customer, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer name" required />
+                  <input type="text" value={customer.name} onChange={e => handleCustomerChange('name', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer name" required />
                 </div>
                 <div>
                   <label className="block text-lg font-semibold text-dark-900 mb-2">Email</label>
-                  <input type="email" value={customer.email} onChange={e => setCustomer({ ...customer, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer email" required />
+                  <input type="email" value={customer.email} onChange={e => handleCustomerChange('email', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer email" required />
                 </div>
                 <div>
                   <label className="block text-lg font-semibold text-dark-900 mb-2">Phone</label>
-                  <input type="tel" value={customer.phone} onChange={e => setCustomer({ ...customer, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer phone" required />
+                  <input type="tel" value={customer.phone} onChange={e => handleCustomerChange('phone', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gold-300 bg-white/50 text-dark-900 font-semibold" placeholder="Customer phone" required />
                 </div>
                 <button type="submit" className="w-full py-4 px-8 rounded-2xl text-lg font-bold text-white bg-gradient-to-r from-success-500 to-success-700 hover:from-success-600 hover:to-success-800 focus:outline-none focus:ring-2 focus:ring-success-400 shadow-lg transition-all duration-200">
                   Save Customer
@@ -246,8 +300,9 @@ const TradingPage: React.FC = () => {
           )}
         </div>
       </div>
+    </div>
     </Layout>
   );
 };
 
-export default TradingPage;
+export default OperationPage;

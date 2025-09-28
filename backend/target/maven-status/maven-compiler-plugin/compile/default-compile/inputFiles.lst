@@ -24,7 +24,6 @@
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/entity/GoldInventory.java
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/controller/ProviderController.java
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/controller/AuthController.java
-/Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/service/InventoryService.java
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/entity/InventoryMovement.java
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/entity/Transaction.java
 /Users/trillizos/Documents/ProjectsJhipster/gold/backend/src/main/java/com/goldapp/service/GoldInventoryService.java

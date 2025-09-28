@@ -18,7 +18,7 @@ export interface GoldPrice {
   buyPrice: number
   sellPrice: number
   currency: string
-  unit: string
+  // Removed unit; all prices are per gram
   timestamp: string
   isActive: boolean
 }
@@ -28,7 +28,7 @@ export interface Transaction {
   user: User
   type: 'BUY' | 'SELL'
   goldAmount: number
-  pricePerOunce: number
+  pricePerGram: number
   totalAmount: number
   status: 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'FAILED'
   description?: string

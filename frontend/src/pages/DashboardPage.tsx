@@ -58,7 +58,7 @@ const DashboardPage: React.FC = () => {
                   )}
                 </p>
                 <p className="text-xs text-dark-500 mt-1">
-                  per {goldPrice?.unit.replace('_', ' ')}
+                  per gram
                 </p>
               </div>
             </div>
@@ -83,7 +83,7 @@ const DashboardPage: React.FC = () => {
                   )}
                 </p>
                 <p className="text-xs text-dark-500 mt-1">
-                  per {goldPrice?.unit.replace('_', ' ')}
+                  per gram
                 </p>
               </div>
             </div>
@@ -207,10 +207,10 @@ const DashboardPage: React.FC = () => {
                         </div>
                         <div>
                           <p className="font-semibold text-dark-900">
-                            {transaction.type} {transaction.amount} oz
+                            {transaction.type} {transaction.amount} grams
                           </p>
                           <p className="text-sm text-dark-600">
-                            ${transaction.pricePerUnit.toFixed(2)} per oz
+                            ${transaction.pricePerGram.toFixed(2)} per gram
                           </p>
                         </div>
                       </div>

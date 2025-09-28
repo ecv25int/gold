@@ -28,8 +28,7 @@ public class GoldPrice {
     @Column(length = 10)
     private String currency = "USD";
     
-    @Column(length = 20)
-    private String unit = "troy_ounce";
+    // Removed unit field; all prices are per gram
     
     @Column(updatable = false)
     private LocalDateTime timestamp;
@@ -62,8 +61,8 @@ public class GoldPrice {
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
     
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    // Removed getUnit(); unit field no longer exists
+    // Removed unit getter/setter
     
     public LocalDateTime getTimestamp() { return timestamp; }
     

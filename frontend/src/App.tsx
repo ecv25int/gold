@@ -3,7 +3,9 @@ import { useAuth } from './hooks/useAuth.tsx'
 import LoginPage from './pages/LoginPage.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
 import DashboardPage from './pages/DashboardPage.tsx'
-import TradingPage from './pages/TradingPage.tsx'
+import OperationPage from './pages/OperationPage.tsx'
+import ProvidersPage from './pages/ProvidersPage.tsx'
+import InventoryPage from './pages/InventoryPage.tsx'
 import TransactionsPage from './pages/TransactionsPage.tsx'
 import ClientsPage from './pages/ClientsPage.tsx'
 
@@ -24,9 +26,11 @@ function App() {
       <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/dashboard" />} />
       <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
       <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
-      <Route path="/trading" element={user ? <TradingPage /> : <Navigate to="/login" />} />
+      <Route path="/operation" element={user ? <OperationPage /> : <Navigate to="/login" />} />
+      <Route path="/providers" element={user ? <ProvidersPage /> : <Navigate to="/login" />} />
+      <Route path="/inventory" element={user ? <InventoryPage /> : <Navigate to="/login" />} />
       <Route path="/transactions" element={user ? <TransactionsPage /> : <Navigate to="/login" />} />
-      <Route path="/ClientsPage" element={user ? <ClientsPage /> : <Navigate to="/login" />} />
+      <Route path="/clients" element={user ? <ClientsPage /> : <Navigate to="/login" />} />
     </Routes>
   )
 }

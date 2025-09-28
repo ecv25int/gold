@@ -5,7 +5,7 @@ export interface GoldPrice {
   buyPrice: number;
   sellPrice: number;
   currency: string;
-  unit: string;
+  // Removed unit; all prices are per gram
   timestamp: string;
   active: boolean;
 }
@@ -15,7 +15,7 @@ export interface Transaction {
   user: { username: string };
   type: 'BUY' | 'SELL';
   amount: number;
-  pricePerUnit: number;
+  pricePerGram: number;
   totalPrice: number;
   timestamp: string;
 }

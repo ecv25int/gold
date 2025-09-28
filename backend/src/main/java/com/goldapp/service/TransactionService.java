@@ -5,7 +5,6 @@ import com.goldapp.entity.Transaction;
 import com.goldapp.entity.User;
 import com.goldapp.entity.Provider;
 import com.goldapp.entity.Client;
-import com.goldapp.entity.InventoryMovement;
 import com.goldapp.repository.TransactionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,23 +25,23 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final UserService userService;
     private final GoldPriceService goldPriceService;
-    private final InventoryService inventoryService;
+    private final GoldInventoryService goldInventoryService;
 
     public TransactionService(TransactionRepository transactionRepository,
                               UserService userService,
                               GoldPriceService goldPriceService,
-                              InventoryService inventoryService) {
+                              GoldInventoryService goldInventoryService) {
         this.transactionRepository = transactionRepository;
         this.userService = userService;
         this.goldPriceService = goldPriceService;
-        this.inventoryService = inventoryService;
+        this.goldInventoryService = goldInventoryService;
     }
 
     public Transaction buyGold(User user, BigDecimal goldAmount) {
         validateAmount(goldAmount);
         GoldPrice currentPrice = currentPriceOrThrow();
-        BigDecimal unitPrice = currentPrice.getBuyPrice();
-        BigDecimal totalAmount = monetary(goldAmount.multiply(unitPrice));
+    BigDecimal pricePerGram = currentPrice.getBuyPrice();
+    BigDecimal totalAmount = monetary(goldAmount.multiply(pricePerGram));
 
         if (!userService.canAfford(user, totalAmount)) {
             throw new RuntimeException("Insufficient funds");
@@ -52,7 +51,7 @@ public class TransactionService {
                 user,
                 Transaction.TransactionType.BUY,
                 goldAmount,
-                unitPrice,
+                pricePerGram,
                 totalAmount
         );
         tx.setStatus(Transaction.TransactionStatus.PENDING);
@@ -72,14 +71,14 @@ public class TransactionService {
             throw new RuntimeException("Insufficient gold holdings");
         }
 
-        BigDecimal unitPrice = currentPrice.getSellPrice();
-        BigDecimal totalAmount = monetary(goldAmount.multiply(unitPrice));
+    BigDecimal pricePerGram = currentPrice.getSellPrice();
+    BigDecimal totalAmount = monetary(goldAmount.multiply(pricePerGram));
 
         Transaction tx = new Transaction(
                 user,
                 Transaction.TransactionType.SELL,
                 goldAmount,
-                unitPrice,
+                pricePerGram,
                 totalAmount
         );
         tx.setStatus(Transaction.TransactionStatus.PENDING);
@@ -136,8 +135,8 @@ public class TransactionService {
         Transaction tx = Transaction.purchaseFromProvider(user, provider, carat, grams, pricePerGram);
         tx.setStatus(Transaction.TransactionStatus.PENDING);
         tx = transactionRepository.save(tx);
-        // inventory in
-        inventoryService.record(tx, grams, carat, InventoryMovement.MovementType.IN);
+    // Add stock to gold inventory
+    goldInventoryService.addStock(carat, grams, pricePerGram, "Purchase from provider", tx);
         complete(tx);
         return transactionRepository.save(tx);
     }
@@ -148,12 +147,12 @@ public class TransactionService {
                                     BigDecimal grams,
                                     BigDecimal pricePerGram) {
         validateAmount(grams);
-        // (check inventory availability here)
-        Transaction tx = Transaction.saleToClient(user, client, carat, grams, pricePerGram);
-        tx.setStatus(Transaction.TransactionStatus.PENDING);
-        tx = transactionRepository.save(tx);
-        inventoryService.record(tx, grams.negate(), carat, InventoryMovement.MovementType.OUT);
-        complete(tx);
-        return transactionRepository.save(tx);
+    // Remove stock from gold inventory
+    Transaction tx = Transaction.saleToClient(user, client, carat, grams, pricePerGram);
+    tx.setStatus(Transaction.TransactionStatus.PENDING);
+    tx = transactionRepository.save(tx);
+    goldInventoryService.removeStock(carat, grams, "Sale to client", tx);
+    complete(tx);
+    return transactionRepository.save(tx);
     }
 }
