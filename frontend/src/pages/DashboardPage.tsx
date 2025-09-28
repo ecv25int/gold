@@ -188,42 +188,48 @@ const DashboardPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {transactionHistory?.content.slice(0, 5).map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="flex items-center justify-between p-6 bg-white/50 rounded-2xl border border-white/30 hover:bg-white/70 transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-2xl ${
-                          transaction.type === 'BUY' 
-                            ? 'bg-success-100 text-success-600' 
-                            : 'bg-danger-100 text-danger-600'
-                        }`}>
-                          {transaction.type === 'BUY' ? (
-                            <TrendingUp className="h-6 w-6" />
-                          ) : (
-                            <TrendingDown className="h-6 w-6" />
-                          )}
+                  {transactionHistory?.content.slice(0, 5).map((transaction) => {
+                    const amount = transaction.amount ?? transaction.goldAmount ?? 0;
+                    const pricePerGram = transaction.pricePerGram ?? 0;
+                    const totalPrice = transaction.totalPrice ?? transaction.totalAmount ?? 0;
+                    const timestamp = transaction.timestamp ?? transaction.createdAt ?? null;
+                    return (
+                      <div
+                        key={transaction.id}
+                        className="flex items-center justify-between p-6 bg-white/50 rounded-2xl border border-white/30 hover:bg-white/70 transition-all duration-200"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`p-3 rounded-2xl ${
+                            transaction.type === 'BUY' 
+                              ? 'bg-success-100 text-success-600' 
+                              : 'bg-danger-100 text-danger-600'
+                          }`}>
+                            {transaction.type === 'BUY' ? (
+                              <TrendingUp className="h-6 w-6" />
+                            ) : (
+                              <TrendingDown className="h-6 w-6" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-dark-900">
+                              {transaction.type} {typeof amount === 'number' ? amount.toFixed(2) : '0.00'} grams
+                            </p>
+                            <p className="text-sm text-dark-600">
+                              ${typeof pricePerGram === 'number' ? pricePerGram.toFixed(2) : '0.00'} per gram
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-semibold text-dark-900">
-                            {transaction.type} {transaction.amount} grams
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-dark-900">
+                            ${typeof totalPrice === 'number' ? totalPrice.toFixed(2) : '0.00'}
                           </p>
                           <p className="text-sm text-dark-600">
-                            ${transaction.pricePerGram.toFixed(2)} per gram
+                            {timestamp ? new Date(timestamp).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg text-dark-900">
-                          ${transaction.totalPrice.toFixed(2)}
-                        </p>
-                        <p className="text-sm text-dark-600">
-                          {new Date(transaction.timestamp).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

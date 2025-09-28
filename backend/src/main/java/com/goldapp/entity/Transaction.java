@@ -31,6 +31,7 @@ public class Transaction {
     // Employee performing the transaction
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User user;
 
     // When selling to a client (outgoing inventory / revenue)

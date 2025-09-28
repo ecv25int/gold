@@ -18,6 +18,9 @@ export interface Transaction {
   pricePerGram: number;
   totalPrice: number;
   timestamp: string;
+  goldAmount?: number;
+  totalAmount?: number;
+  createdAt?: string;
 }
 
 export interface TransactionPage {

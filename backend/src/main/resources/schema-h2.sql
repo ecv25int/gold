@@ -142,6 +142,16 @@ CREATE TABLE IF NOT EXISTS invoices (
     client_id BIGINT,
     provider_id BIGINT,
     currency VARCHAR(10) DEFAULT 'USD',
+    customer_address VARCHAR(255),
+    customer_tax_id VARCHAR(50),
+    invoice_number VARCHAR(50),
+    legal_terms VARCHAR(500),
+    paid_date TIMESTAMP,
+    payment_method VARCHAR(50),
+    subtotal DECIMAL(19,2),
+    tax_amount DECIMAL(19,2),
+    tax_rate DECIMAL(5,2),
+    transaction_id BIGINT,
     invoice_type VARCHAR(20),
     total DECIMAL(19,2) NOT NULL,
     status VARCHAR(20) DEFAULT 'PENDING',
@@ -149,7 +159,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     due_date TIMESTAMP,
     notes VARCHAR(500),
     FOREIGN KEY (client_id) REFERENCES clients(id),
-    FOREIGN KEY (provider_id) REFERENCES providers(id)
+    FOREIGN KEY (provider_id) REFERENCES providers(id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions(id)
 );
 
 -- Dummy data for clients

@@ -154,113 +154,124 @@ const TransactionsPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {transactions.map((transaction, index) => (
-                        <tr 
-                          key={transaction.id} 
-                          className={`border-b border-white/20 hover:bg-white/50 transition-all duration-200 ${
-                            index % 2 === 0 ? 'bg-white/20' : 'bg-transparent'
-                          }`}
-                        >
-                          <td className="py-6 px-8">
-                            <div className="flex items-center gap-4">
-                              <div className={`p-3 rounded-2xl ${
-                                transaction.type === 'BUY' 
-                                  ? 'bg-success-100 text-success-600' 
-                                  : 'bg-danger-100 text-danger-600'
-                              }`}>
-                                {transaction.type === 'BUY' ? (
-                                  <ArrowUpRight className="h-5 w-5" />
-                                ) : (
-                                  <ArrowDownRight className="h-5 w-5" />
-                                )}
-                              </div>
-                              <div>
-                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                                  transaction.type === 'BUY'
-                                    ? 'bg-success-100 text-success-700'
-                                    : 'bg-danger-100 text-danger-700'
+                      {transactions.map((transaction, index) => {
+                        // Map backend fields to frontend expectations and add fallback for undefined values
+                        const amount = transaction.amount ?? transaction.goldAmount ?? 0;
+                        const pricePerGram = transaction.pricePerGram ?? 0;
+                        const totalPrice = transaction.totalPrice ?? transaction.totalAmount ?? 0;
+                        const timestamp = transaction.timestamp ?? transaction.createdAt ?? null;
+                        return (
+                          <tr 
+                            key={transaction.id} 
+                            className={`border-b border-white/20 hover:bg-white/50 transition-all duration-200 ${
+                              index % 2 === 0 ? 'bg-white/20' : 'bg-transparent'
+                            }`}
+                          >
+                            <td className="py-6 px-8">
+                              <div className="flex items-center gap-4">
+                                <div className={`p-3 rounded-2xl ${
+                                  transaction.type === 'BUY' 
+                                    ? 'bg-success-100 text-success-600' 
+                                    : 'bg-danger-100 text-danger-600'
                                 }`}>
-                                  {transaction.type}
-                                </span>
+                                  {transaction.type === 'BUY' ? (
+                                    <ArrowUpRight className="h-5 w-5" />
+                                  ) : (
+                                    <ArrowDownRight className="h-5 w-5" />
+                                  )}
+                                </div>
+                                <div>
+                                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                                    transaction.type === 'BUY'
+                                      ? 'bg-success-100 text-success-700'
+                                      : 'bg-danger-100 text-danger-700'
+                                  }`}>
+                                    {transaction.type}
+                                  </span>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="py-6 px-8 text-dark-900 font-semibold">
-                            {transaction.amount.toFixed(2)} grams
-                          </td>
-                          <td className="py-6 px-8 text-dark-900 font-semibold">
-                            ${transaction.pricePerGram.toFixed(2)}
-                          </td>
-                          <td className="py-6 px-8 text-dark-900 font-bold text-lg">
-                            ${transaction.totalPrice.toFixed(2)}
-                          </td>
-                          <td className="py-6 px-8 text-dark-600">
-                            <div>
-                              <div className="font-semibold">
-                                {new Date(transaction.timestamp).toLocaleDateString()}
+                            </td>
+                            <td className="py-6 px-8 text-dark-900 font-semibold">
+                              {typeof amount === 'number' ? amount.toFixed(2) : '0.00'} grams
+                            </td>
+                            <td className="py-6 px-8 text-dark-900 font-semibold">
+                              ${typeof pricePerGram === 'number' ? pricePerGram.toFixed(2) : '0.00'}
+                            </td>
+                            <td className="py-6 px-8 text-dark-900 font-bold text-lg">
+                              ${typeof totalPrice === 'number' ? totalPrice.toFixed(2) : '0.00'}
+                            </td>
+                            <td className="py-6 px-8 text-dark-600">
+                              <div>
+                                <div className="font-semibold">
+                                  {timestamp ? new Date(timestamp).toLocaleDateString() : 'N/A'}
+                                </div>
+                                <div className="text-sm text-dark-500">
+                                  {timestamp ? new Date(timestamp).toLocaleTimeString() : ''}
+                                </div>
                               </div>
-                              <div className="text-sm text-dark-500">
-                                {new Date(transaction.timestamp).toLocaleTimeString()}
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
 
                 {/* Mobile Cards */}
                 <div className="md:hidden p-6 space-y-4">
-                  {transactions.map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="bg-white/50 border border-white/30 rounded-2xl p-6 hover:bg-white/70 transition-all duration-200"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-3 rounded-2xl ${
-                            transaction.type === 'BUY' 
-                              ? 'bg-success-100 text-success-600' 
-                              : 'bg-danger-100 text-danger-600'
-                          }`}>
-                            {transaction.type === 'BUY' ? (
-                              <ArrowUpRight className="h-5 w-5" />
-                            ) : (
-                              <ArrowDownRight className="h-5 w-5" />
-                            )}
+                  {transactions.map((transaction) => {
+                    const amount = transaction.amount ?? transaction.goldAmount ?? 0;
+                    const pricePerGram = transaction.pricePerGram ?? 0;
+                    const totalPrice = transaction.totalPrice ?? transaction.totalAmount ?? 0;
+                    const timestamp = transaction.timestamp ?? transaction.createdAt ?? null;
+                    return (
+                      <div
+                        key={transaction.id}
+                        className="bg-white/50 border border-white/30 rounded-2xl p-6 hover:bg-white/70 transition-all duration-200"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-3 rounded-2xl ${
+                              transaction.type === 'BUY' 
+                                ? 'bg-success-100 text-success-600' 
+                                : 'bg-danger-100 text-danger-600'
+                            }`}>
+                              {transaction.type === 'BUY' ? (
+                                <ArrowUpRight className="h-5 w-5" />
+                              ) : (
+                                <ArrowDownRight className="h-5 w-5" />
+                              )}
+                            </div>
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                              transaction.type === 'BUY'
+                                ? 'bg-success-100 text-success-700'
+                                : 'bg-danger-100 text-danger-700'
+                            }`}>
+                              {transaction.type}
+                            </span>
                           </div>
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                            transaction.type === 'BUY'
-                              ? 'bg-success-100 text-success-700'
-                              : 'bg-danger-100 text-danger-700'
-                          }`}>
-                            {transaction.type}
-                          </span>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-dark-900">
+                              ${typeof totalPrice === 'number' ? totalPrice.toFixed(2) : '0.00'}
+                            </div>
+                            <div className="text-sm text-dark-500">
+                              {timestamp ? new Date(timestamp).toLocaleDateString() : 'N/A'}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-dark-900">
-                            ${transaction.totalPrice.toFixed(2)}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="text-sm text-dark-600">Amount</span>
+                            <p className="font-semibold text-dark-900">{typeof amount === 'number' ? amount.toFixed(2) : '0.00'} grams</p>
                           </div>
-                          <div className="text-sm text-dark-500">
-                            {new Date(transaction.timestamp).toLocaleDateString()}
+                          <div>
+                            <span className="text-sm text-dark-600">Price per gram</span>
+                            <p className="font-semibold text-dark-900">${typeof pricePerGram === 'number' ? pricePerGram.toFixed(2) : '0.00'}</p>
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <span className="text-sm text-dark-600">Amount</span>
-                          {/* Removed ounces, only show grams */}
-                          <p className="font-semibold text-dark-900">{transaction.amount.toFixed(2)} grams</p>
-                        </div>
-                        <div>
-                          {/* Removed price per ounce, only show price per gram */}
-                          <span className="text-sm text-dark-600">Price per gram</span>
-                          <p className="font-semibold text-dark-900">${transaction.pricePerGram.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Pagination */}
