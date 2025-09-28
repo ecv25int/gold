@@ -1,0 +1,44 @@
+# Node/Vite/React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Java/Maven
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.mvn/
+backend/.idea/
+backend/*.iml
+backend/data/
+
+# OS/Editor
+.DS_Store
+*.swp
+*.swo
+.vscode/
+
+# Logs
+*.log
+
+# H2/Database
+backend/*.mv.db
+backend/*.trace.db
+backend/data/*.mv.db
+backend/data/*.trace.db
+
+# Misc
+*.bak
+*.tmp
+
+# Coverage/Reports
+coverage/
+*.lcov
+
+# Docker
+**/.docker/
+**/docker-compose.override.yml
+
+# Test output
+**/test-output/
