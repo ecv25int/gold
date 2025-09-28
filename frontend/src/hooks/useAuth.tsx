@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '../services/authService';
 import { User, RegisterData } from '../types';
+import api from '../services/api';
 
 export interface AuthContextType {
   user: User | null;
@@ -48,21 +49,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await authService.login({ username, password });
       localStorage.setItem('token', response.token);
-      
-      // Create user object from auth response
-      const userData: User = {
-        id: 0, // Will be updated when we fetch user details
-        username: response.username,
-        email: '', // We don't get email from login response
-        firstName: '',
-        lastName: '',
-        accountBalance: 0,
-        goldHoldings: 0,
-        role: 'USER' as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      
+
+      // Fetch full user profile from backend
+      const profileRes = await api.get<User>(`/auth/profile/${response.username}`);
+      const userData = profileRes.data;
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     } catch (error) {

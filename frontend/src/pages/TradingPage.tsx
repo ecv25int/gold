@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 
@@ -82,9 +83,9 @@ const TradingPage: React.FC = () => {
                 <h1 className="text-4xl font-display font-bold text-dark-900">Gold Trading</h1>
                 <p className="text-lg text-dark-600">Trade gold at live market prices with instant execution</p>
               </div>
-              <a href="/ClientsPage" className="inline-block py-2 px-6 rounded-xl font-bold bg-gold-100 text-gold-800 border border-gold-400 hover:bg-gold-200 transition-all duration-150 cursor-pointer">
+              <Link to="/ClientsPage" className="inline-block py-2 px-6 rounded-xl font-bold bg-gold-100 text-gold-800 border border-gold-400 hover:bg-gold-200 transition-all duration-150 cursor-pointer">
                 Clients Registry
-              </a>
+              </Link>
             </div>
           </div>
           {/* Clients Section removed, now in ClientsPage.tsx */}

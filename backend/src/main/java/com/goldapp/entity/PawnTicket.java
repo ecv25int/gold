@@ -26,7 +26,7 @@ public class PawnTicket {
     @JoinColumn(name = "redeem_transaction_id")
     private Transaction redeemTransaction;
 
-    private Integer goldCarat;
+    // removed unused goldCarat
     @Column(precision = 19, scale = 6)
     private BigDecimal pledgedGoldGrams;
 
@@ -37,7 +37,7 @@ public class PawnTicket {
     private BigDecimal interestAccrued;
 
     private LocalDateTime createdAt;
-    private LocalDateTime redeemedAt;
+    // removed unused redeemedAt
 
     @PrePersist
     void onCreate() { if (createdAt == null) createdAt = LocalDateTime.now(); }

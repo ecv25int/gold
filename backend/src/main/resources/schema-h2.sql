@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS gold_prices (
 CREATE TABLE IF NOT EXISTS transactions (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
+    client_id BIGINT,
+    gold_carat INT,
+    price_per_gram DECIMAL(19,2),
     type VARCHAR(10) NOT NULL,
     gold_amount DECIMAL(19,6) NOT NULL,
     price_per_ounce DECIMAL(19,2) NOT NULL,

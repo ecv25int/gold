@@ -37,11 +37,10 @@ CREATE TABLE IF NOT EXISTS gold_prices (
     is_active BOOLEAN DEFAULT true
 );
 
--- Carat prices table
 CREATE TABLE IF NOT EXISTS carat_prices (
     id BIGSERIAL PRIMARY KEY,
-    carat INTEGER NOT NULL,
-    price_per_gram DECIMAL(19,2) NOT NULL
+    carat INT NOT NULL,
+    price_per_gram DECIMAL(10,2) NOT NULL
 );
 
 -- Clients table

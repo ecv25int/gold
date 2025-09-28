@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage.tsx'
 import DashboardPage from './pages/DashboardPage.tsx'
 import TradingPage from './pages/TradingPage.tsx'
 import TransactionsPage from './pages/TransactionsPage.tsx'
+import ClientsPage from './pages/ClientsPage.tsx'
 
 function App() {
   const { user, loading } = useAuth()
@@ -25,6 +26,7 @@ function App() {
       <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
       <Route path="/trading" element={user ? <TradingPage /> : <Navigate to="/login" />} />
       <Route path="/transactions" element={user ? <TransactionsPage /> : <Navigate to="/login" />} />
+      <Route path="/ClientsPage" element={user ? <ClientsPage /> : <Navigate to="/login" />} />
     </Routes>
   )
 }

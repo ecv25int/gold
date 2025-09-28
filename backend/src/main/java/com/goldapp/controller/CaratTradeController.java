@@ -4,7 +4,6 @@ import com.goldapp.entity.CaratPrice;
 import com.goldapp.entity.Transaction;
 import com.goldapp.entity.User;
 import com.goldapp.service.CaratPriceService;
-import com.goldapp.service.TransactionService;
 import com.goldapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,6 @@ import java.math.BigDecimal;
 public class CaratTradeController {
     @Autowired
     private CaratPriceService caratPriceService;
-    @Autowired
-    private TransactionService transactionService;
     @Autowired
     private UserService userService;
 
