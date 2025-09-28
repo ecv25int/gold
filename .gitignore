@@ -13,6 +13,9 @@ backend/.idea/
 backend/*.iml
 backend/data/
 
+# Ignore Java class files
+*.class
+
 # OS/Editor
 .DS_Store
 *.swp
